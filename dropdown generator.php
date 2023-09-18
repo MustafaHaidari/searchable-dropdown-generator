@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <title>Combined Example</title>
   <style>
+   #container{
+    border: 2px solid green;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;  /* New addition */
+    gap: 5px;
+    max-width: 1550px;  /* New addition */
+}
     .input-group {
       display: flex;
       flex-direction: column;
@@ -71,49 +79,55 @@
 </head>
 <body>
 
-<button id="generate">Generate new input</button>
-<div id="container"></div>
+<form id="myForm" action="process.php" method="post">
+<button type="button" id="generate">Generate new input</button>
+  <div id="container"></div>
+  <input type="submit" value="Submit">
+</form>
+
 
 <script>
-  function createInputGroup(options) {
-    // Create input group
-    const inputGroup = document.createElement("div");
-    inputGroup.className = "input-group";
+   let inputGroupCounter = 1;
 
-    // Create dropdown input
-    const dropdownInput = document.createElement("input");
-    dropdownInput.type = "text";
-    dropdownInput.placeholder = "Type to search or click for dropdown";
-    dropdownInput.onclick = toggleDropdown;
-    dropdownInput.oninput = filterOptions;
+function createInputGroup(options) {
+  const inputGroup = document.createElement("div");
+  inputGroup.className = "input-group";
 
-    // Create dropdown
-    const dropdown = document.createElement("div");
-    dropdown.id = "dropdown";
+  const dropdownInput = document.createElement("input");
+  dropdownInput.type = "text";
+  dropdownInput.name = "dropdown" + inputGroupCounter;
+  dropdownInput.placeholder = "Type or select a size";
+  dropdownInput.onclick = toggleDropdown;
+  dropdownInput.oninput = filterOptions;
 
-    const list = document.createElement("ul");
-    list.id = "optionList";
+  const dropdown = document.createElement("div");
+  dropdown.id = "dropdown";
 
-    for (let option of options) {
-      const li = document.createElement("li");
-      li.textContent = option;
-      list.appendChild(li);
-    }
+  const list = document.createElement("ul");
+  list.id = "optionList";
 
-    dropdown.appendChild(list);
-
-    // Create simple text input
-    const textInput = document.createElement("input");
-    textInput.type = "text";
-    textInput.placeholder = "Second Input";
-
-    // Append elements
-    inputGroup.appendChild(dropdownInput);
-    inputGroup.appendChild(dropdown);
-    inputGroup.appendChild(textInput);
-
-    return inputGroup;
+  for (let option of options) {
+    const li = document.createElement("li");
+    li.textContent = option;
+    list.appendChild(li);
   }
+
+  dropdown.appendChild(list);
+
+  const textInput = document.createElement("input");
+  textInput.type = "text";
+  textInput.name = "textinput" + inputGroupCounter;
+  textInput.placeholder = "Enter stock quantity";
+  textInput.type = "number";
+  textInput.min = "1";
+
+  inputGroup.appendChild(dropdownInput);
+  inputGroup.appendChild(dropdown);
+  inputGroup.appendChild(textInput);
+
+  inputGroupCounter++;
+  return inputGroup;
+}
 
   function toggleDropdown() {
     const dropdown = this.nextElementSibling;
@@ -154,7 +168,10 @@
   });
 
   document.getElementById("generate").addEventListener("click", function() {
-    const sampleOptions = ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5", "Option 6", "Option 7", "Option 8"];
+    const sampleOptions = [];
+for (let i = 0.5; i <= 100; i += 0.5) {
+  sampleOptions.push(i.toFixed(1));
+}
     const newInputGroup = createInputGroup(sampleOptions);
     const container = document.getElementById("container");
     container.appendChild(newInputGroup);
